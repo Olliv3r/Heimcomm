@@ -1,12 +1,12 @@
 Gera um comando extenso baseado no pit do dispositivo para enviar arquivos de flash para as partiçoes do dispositivo.
 
 
-***Requisitos:
+Requisitos:
 ```
 apt update && apt install lz4 tar unzip -y
 ```
 
-***Gerar comando baseado no PIT:
+Gerar comando baseado no PIT:
 ```
 ./heimcomm.sh build-command pit.txt
 ```
