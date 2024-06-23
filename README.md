@@ -12,7 +12,7 @@ Gerar comando baseado no PIT:
 ```
 
 > [!WARNING]
-Para gerar um comando expecífico baseado na pasta de arquivos flashe `vendor.img` e `ch.bin`, é necessário extrair a stock rom em uma pasta chamada `extracted` usando o comando a seguir:
+Para gerar um comando expecífico baseado na pasta de arquivos flash `vendor.img` e `ch.bin`, é necessário extrair a stock rom em uma pasta chamada `extracted` usando o comando a seguir:
 ```
 ./heimcomm.sh extract stockrom.zip
 ```
