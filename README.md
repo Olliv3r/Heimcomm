@@ -1,4 +1,4 @@
-Gera um comando extenso baseado no pit do dispositivo para enviar arquivos de flash para as partiçoes do dispositivo.
+Gera um comando extenso baseado no pit do dispositivo para enviar arquivos de flash para as partiçôes do dispositivo.
 
 
 Requisitos:

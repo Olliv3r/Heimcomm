@@ -105,7 +105,7 @@ extract() {
 
 # Ajuda
 helper() {
-	echo -e "Usage: $(basename $0) <action> <action arguments>\n\nAction: extract\nArguments: [FILE_ZIP_STOCK_ROM]\nDescription: Extrai o arquivo da STOCK ROM passando pelo os 4 níveis de compactação.\n\nAction: build-command\nArguments: [FILE_PIT]\nDescription: Constrói comando longo do heimdall de acordo com o arquivo PIT extraído do dispositivo."
+	echo -e "Usage: $(basename $0) <action> <action arguments>\n\nAction: extract\nArguments: [FILE_ZIP_STOCK_ROM]\nDescription: Extrai os arquivos da STOCK ROM no diretório 'extracted'.\n\nAction: build-command\nArguments: [FILE_PIT]\nDescription: Constrói comando longo do heimdall de acordo com o arquivo PIT extraído do dispositivo."
 }
 
 # TRATAMENTO DE OPÇÔES
