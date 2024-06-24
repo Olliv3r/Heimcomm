@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Gera um comando extenso baseado no pit do dispositivo para fleshar as imagens nas partiçoes correspondente.
+# Gera um comando extenso baseado no pit do dispositivo para enviar arquivos flash para as partições do dispositivo usando o heimdall.
 #
 #
 
