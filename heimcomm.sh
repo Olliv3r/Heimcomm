@@ -25,6 +25,9 @@ read_pit() {
 				if [[ -f extracted/$flash_filename ]]; then
 					partition_names_array+=("$partition_name")
 					flash_filenames_array+=("$flash_filename")
+				else
+					echo -e "\e[1;31mExtraia o arquivo da stock rom antes de gerar o comando!\e[0m"
+					exit
 				fi
 			fi
 
