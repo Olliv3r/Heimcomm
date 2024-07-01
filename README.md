@@ -20,6 +20,9 @@ Para gerar um comando expecífico baseado na pasta de arquivos flash `vendor.img
 Gerar comando para `heimdall no pc`:
 ![Heimdall pc](https://github.com/Olliv3r/Heimcomm/blob/main/media/pc.jpg)
 
+> [!NOTE]
+*Pra que a pasta cache do aplicativo `heimdoo` esteja acessível, abra o aplicativo e selecione pelo menos um arquivo para que o app crie esta pasta cache pra utilização do app.*
+
 Copiando arquivos para a pasta cache do `heimdoo app`:
 ![Heimdoo app](https://github.com/Olliv3r/Heimcomm/blob/main/media/cp.jpg)
 
