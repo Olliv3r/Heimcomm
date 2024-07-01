@@ -2,15 +2,13 @@
 #
 # Gera um comando extenso baseado no pit do dispositivo para enviar arquivos flash para as partições do dispositivo usando o heimdall.
 #
+# Autor: Oliver Silva
 #
 
 partition_names_array=()
 flash_filenames_array=()
 command=("heimdall flash")
 directory_md5=("AP" "BL" "CSC" "CP" "HOME")
-
-# Chaves de ativar funçôes
-build_command_key=0
 
 # LER ARQUIVO PIT EXTRAÍDO DO DISPOSITIVO
 read_pit() {
@@ -26,15 +24,15 @@ read_pit() {
 			flash_filename=${line#Flash Filename: }
 
 			if [[ -n "$partition_name" && "$partition_name" != "-" && -n "$flash_filename" && "$flash_filename" != "-" ]]; then
-			  if [ -d $dir_imgs ]; then
-  				if [[ -f $dir_imgs/$flash_filename ]]; then
-  					partition_names_array+=("$partition_name")
-  					flash_filenames_array+=("$flash_filename")
-  				fi
-  			else
+				if [ -d $dir_imgs ]; then
+  					if [[ -f $dir_imgs/$flash_filename ]]; then
+  						partition_names_array+=("$partition_name")
+  						flash_filenames_array+=("$flash_filename")
+  					fi
+  				else
 					echo -e "\e[1;31mDiretório não existe!\e[0m"
 					exit
-  			fi
+  				fi
 			fi
 
 			partition_name=""
@@ -43,14 +41,14 @@ read_pit() {
 	done < "$pit_file"
 }
 
-# CONSTRUINDO COMANDO LONGO DO HEIMDALL
+# CONSTRUINDO COMANDO LONGO DO HEIMDALL BASEADO NO DIRETÓRIO E PIT
 build_command() {
-  dir_imgs=$1
+	dir_imgs=$1
   
-  if [ ! -d $dir_imgs ]; then
-    echo -e "\e[1;31mDiretório não existe!\e[0m"
+  	if [ ! -d $dir_imgs ]; then
+  		echo -e "\e[1;31mDiretório não existe!\e[0m"
 		exit
-  fi
+  	fi
   
 	if [[ ${#partition_names_array[*]} -eq ${#flash_filenames_array[*]} ]]; then
 		for ((i=0; i < ${#partition_names_array[*]}; i++)); do
@@ -63,7 +61,7 @@ build_command() {
 	echo -e "${command[*]}\n"
 }
 
-# EXTRAI TODOS OS ARQUIVO TAR.MD5
+# EXTRAI TODOS OS ARQUIVO .TAR.MD5
 extract_all_tar_md5() {
 	echo -e "\e[1;32mExtraíndo arquivos (MD5)...\e[0m"
 	for dir in ${directory_md5[*]}; do
@@ -72,7 +70,7 @@ extract_all_tar_md5() {
 	rm -rf *.md5
 }
 
-# EXTRAI TODOS OS ARQUIVO LZ4
+# EXTRAI TODOS OS ARQUIVO .LZ4
 extract_all_lz4() {
 	echo -e "\e[1;32mExtraíndo arquivos (LZ4)...\e[0m"
 	for dir in ${directory_md5[*]}; do
@@ -94,6 +92,7 @@ move_files_all() {
 	done
 }
 
+# EXTRAI OS ARQUIVOS DA STOCK ROM
 extract() {
 	ext=$(echo "$1" | cut -d . -f2)
 	[ "$ext" != "zip" ] && echo -e "\e[1;31mExtensão invalida!\e[0m" && exit
@@ -119,12 +118,13 @@ extract() {
 	
 }
 
+# COPIA TODOS OS ARQUIVOS DE UM DIRETÓRIO EXPECÍFICO PARA O CACHE DO APLICATIVO HEIMDOO (APENAS PARA ANDROID TERMUX)
 cp_files_cache() {
-  dir_imgs=$1
+	dir_imgs=$1
   
 	[ ! -d /sdcard ] && termux-setup-storage
 	
-	cache=/sdcard/Android/data/dev.rohitverma882.heimdoo/cache/cached_imgs
+	cache=/storage/emulated/0/Android/data/dev.rohitverma882.heimdoo/cache/cached_imgs
 
 	if [ ! -d $cache ]; then
 		echo "Abra o aplicativo 'heimdoo' e selecione pelo menos um arquivo e volte a executar este programa '$0' novamente!"
@@ -136,13 +136,13 @@ cp_files_cache() {
 			rm $file
 		done
   
-    if [ -d $dir_imgs ]; then
-		  echo "Copiando novos arquivos para $cache..."
-		  cp $dir_imgs/* $cache
-		  exit 0
+    	if [ -d $dir_imgs ]; then
+			echo "Copiando novos arquivos para $cache..."
+			cp $dir_imgs/* $cache
+			exit 0
 		else
-		  echo "Diretório $dir_imgs não existe"
-		  exit
+			echo "Diretório $dir_imgs não existe"
+			exit
 		fi
 	fi
 
@@ -155,36 +155,35 @@ helper() {
 
 # TRATAMENTO DE OPÇÔES
 if [ -z "$1" ];then
-  helper
-  exit
+	helper
+  	exit
 else
-  while [ -n "$1" ]; do
-	  case "$1" in
-      help) helper;;
-	    cp-files-cache)
-	      shift
-	      dir_imgs=$1
+  	while [ -n "$1" ]; do
+  		case "$1" in
+      		help) helper;;
+	    	cp-files-cache)
+	      		shift
+	      		dir_imgs=$1
 	      
-	      if [ -n "$dir_imgs" ]; then
-	        cp_files_cache $dir_imgs
-	      else
-	        echo "Precisa do diretório de imagens!"
-	        exit
-	      fi;;
-	    extract)
-	      shift
-		    file=$1
+	      		if [ -n "$dir_imgs" ]; then
+	        		cp_files_cache $dir_imgs
+	      		else
+	        		echo "Precisa do diretório de imagens!"
+	        		exit
+	      		fi;;
+	    	extract)
+	      		shift
+		    	file=$1
 				
-		    if [ -n "$file" ]; then
-		      extract $file
+		    	if [ -n "$file" ]; then
+		      		extract $file
 				else
 					echo "Precisa do arquivo ZIP da STOCK ROM!"
 					exit
-				fi
-				;;
-		  build-command)
-			  shift
-			  dir_imgs=$1
+				fi;;
+			build-command)
+				shift
+			  	dir_imgs=$1
 
 				if [ -n "$dir_imgs" ]; then
 					shift
@@ -200,10 +199,9 @@ else
 				else
 					echo "Precisa do diretório das imagens!"
 					exit
-				fi
-				;;
-		  *)
-			  helper;;
+				fi;;
+			*)
+				helper;;
 		esac
 		shift
 	done
