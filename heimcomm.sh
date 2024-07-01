@@ -9,9 +9,13 @@ flash_filenames_array=()
 command=("heimdall flash")
 directory_md5=("AP" "BL" "CSC" "CP" "HOME")
 
+# Chaves de ativar funçôes
+build_command_key=0
+
 # LER ARQUIVO PIT EXTRAÍDO DO DISPOSITIVO
 read_pit() {
-	pit_file=$1
+	dir_imgs=$1
+	pit_file=$2
 
 	while IFS= read -r line; do
 		if [[ "$line" == "Partition Name:"* ]]; then
@@ -22,13 +26,15 @@ read_pit() {
 			flash_filename=${line#Flash Filename: }
 
 			if [[ -n "$partition_name" && "$partition_name" != "-" && -n "$flash_filename" && "$flash_filename" != "-" ]]; then
-				if [[ -f extracted/$flash_filename ]]; then
-					partition_names_array+=("$partition_name")
-					flash_filenames_array+=("$flash_filename")
-				else
-					echo -e "\e[1;31mExtraia o arquivo da stock rom antes de gerar o comando!\e[0m"
+			  if [ -d $dir_imgs ]; then
+  				if [[ -f $dir_imgs/$flash_filename ]]; then
+  					partition_names_array+=("$partition_name")
+  					flash_filenames_array+=("$flash_filename")
+  				fi
+  			else
+					echo -e "\e[1;31mDiretório não existe!\e[0m"
 					exit
-				fi
+  			fi
 			fi
 
 			partition_name=""
@@ -39,9 +45,16 @@ read_pit() {
 
 # CONSTRUINDO COMANDO LONGO DO HEIMDALL
 build_command() {
+  dir_imgs=$1
+  
+  if [ ! -d $dir_imgs ]; then
+    echo -e "\e[1;31mDiretório não existe!\e[0m"
+		exit
+  fi
+  
 	if [[ ${#partition_names_array[*]} -eq ${#flash_filenames_array[*]} ]]; then
 		for ((i=0; i < ${#partition_names_array[*]}; i++)); do
-			param="--${partition_names_array[$i]} ${flash_filenames_array[$i]}"
+			param="--${partition_names_array[$i]} $dir_imgs${flash_filenames_array[$i]}"
 			command+=("$param")
 		done
 	fi
@@ -106,44 +119,91 @@ extract() {
 	
 }
 
+cp_files_cache() {
+  dir_imgs=$1
+  
+	[ ! -d /sdcard ] && termux-setup-storage
+	
+	cache=/sdcard/Android/data/dev.rohitverma882.heimdoo/cache/cached_imgs
+
+	if [ ! -d $cache ]; then
+		echo "Abra o aplicativo 'heimdoo' e selecione pelo menos um arquivo e volte a executar este programa '$0' novamente!"
+		exit
+	else
+		echo "Cache heimdoo OK"
+		echo "Excluindo arquivos antigos..."
+		for file in $cache/*; do
+			rm $file
+		done
+  
+    if [ -d $dir_imgs ]; then
+		  echo "Copiando novos arquivos para $cache..."
+		  cp $dir_imgs/* $cache
+		  exit 0
+		else
+		  echo "Diretório $dir_imgs não existe"
+		  exit
+		fi
+	fi
+
+}
+
 # Ajuda
 helper() {
-	echo -e "Usage: $(basename $0) <action> <action arguments>\n\nAction: extract\nArguments: [FILE_ZIP_STOCK_ROM]\nDescription: Extrai os arquivos da STOCK ROM no diretório 'extracted'.\n\nAction: build-command\nArguments: [FILE_PIT]\nDescription: Constrói comando longo do heimdall de acordo com o arquivo PIT extraído do dispositivo."
+	echo -e "Usage: $(basename $0) <action> <action arguments>\n\nAction: extract\nArguments: [FILE_ZIP_STOCK_ROM]\nDescription: Extrai os arquivos da STOCK ROM no diretório 'extracted'.\n\nAction: build-command\nArguments: [DIRECTORY_IMGS FILE_PIT]\nDescription: Constrói comando longo do heimdall de acordo com o arquivo PIT extraído do dispositivo.\n\nAction: cp-files-cache\nArguments: [DIRECTORY_IMGS]\nDescription: Copia todos os arquivos de um diretório para o cache de imagens do aplicativo heimdoo [SOMENTE PARA ANDROID TERMUX]."
 }
 
 # TRATAMENTO DE OPÇÔES
 if [ -z "$1" ];then
-	helper
-	exit
+  helper
+  exit
 else
-	while [ -n "$1" ]; do
-		case "$1" in
-			help) helper;;
-			extract)
-				shift
-				file=$1
+  while [ -n "$1" ]; do
+	  case "$1" in
+      help) helper;;
+	    cp-files-cache)
+	      shift
+	      dir_imgs=$1
+	      
+	      if [ -n "$dir_imgs" ]; then
+	        cp_files_cache $dir_imgs
+	      else
+	        echo "Precisa do diretório de imagens!"
+	        exit
+	      fi;;
+	    extract)
+	      shift
+		    file=$1
 				
-				if [ -n "$file" ]; then
-					extract $file
+		    if [ -n "$file" ]; then
+		      extract $file
 				else
 					echo "Precisa do arquivo ZIP da STOCK ROM!"
 					exit
 				fi
 				;;
-			build-command)
-				shift
-				file=$1
+		  build-command)
+			  shift
+			  dir_imgs=$1
+
+				if [ -n "$dir_imgs" ]; then
+					shift
+					file=$1
 				
-				if [ -n "$file" ]; then
-					read_pit $file
-					build_command
+					if [ -n "$file" ]; then
+						read_pit $dir_imgs $file
+						build_command $dir_imgs/
+					else
+						echo "Precisa do arquivo PIT extraído do dispositivo!"
+						exit
+					fi
 				else
-					echo "Precisa do arquivo PIT extraído do dispositivo!"
+					echo "Precisa do diretório das imagens!"
 					exit
 				fi
 				;;
-			*)
-				helper;;
+		  *)
+			  helper;;
 		esac
 		shift
 	done
