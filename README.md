@@ -17,10 +17,13 @@ Para gerar um comando expecífico baseado na pasta de arquivos flash `vendor.img
 ./heimcomm.sh extract stockrom.zip
 ```
 
+Para `heimdall no pc`:
+![Heimdall pc](https://github.com/Olliv3r/Heimcomm/blob/main/media/android.jpg)
+
 Para android com o `heimdoo app`:
 ![Heimdoo app](https://github.com/Olliv3r/Heimcomm/blob/main/media/android.jpg)
 
-Para PC:
-![Heimdal pc](https://github.com/Olliv3r/Heimcomm/blob/main/media/pc.jpg)
+Copiando arquivos para a pasta cache do `heimdoo app`:
+![Copiar para cache Heimdoo](https://github.com/Olliv3r/Heimcomm/blob/main/media/pc.jpg)
 
 Boa sorte ;)
