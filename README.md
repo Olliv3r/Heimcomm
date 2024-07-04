@@ -31,7 +31,7 @@ Gerar comando para o aplicativo `heimdoo` *Apenas para Android Termux*:
 ![Gerar comando para o aplicativo Heimdoo](https://github.com/Olliv3r/Heimcomm/blob/main/media/build_command_android.jpg)
 
 Limpar o cache de arquivos do aplicativo `heimdoo` depois do processo *Apenas para Android Termux*:
-![Limpar o cache de arquivos do Heimdoo](https://github.com/Olliv3r/Heimcomm/blob/main/media/mv_files_cache.jpg)
+![Limpar o cache de arquivos do Heimdoo](https://github.com/Olliv3r/Heimcomm/blob/main/media/clear_cache.jpg)
 
 Fontes importantes:
 1. <a href="https://github.com/RohitVerma882/Heimdoo">Heimdoo Android</a>
