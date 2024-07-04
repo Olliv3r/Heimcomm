@@ -19,16 +19,22 @@ Para gerar o comando baseado no diretório padrão, é necessário extrair a sto
 ```
 
 Gerar comando para `heimdall no pc`:
-![Heimdall pc](https://github.com/Olliv3r/Heimcomm/blob/main/media/pc.jpg)
+![Heimdall pc](https://github.com/Olliv3r/Heimcomm/blob/main/media/build_command_pc.jpg)
 
 > [!NOTE]
 Apenas para android Termux: *Pra que a pasta cache do aplicativo `heimdoo` seja acessível, precisamos abrir o aplicativo e selecionar um arquivo pelo menos uma vez pra que o app crie a pasta cache pra utilização no app.*
 
-Copiando arquivos para a pasta cache do `heimdoo app` *Apenas para android TERMUX* e Gerando comando para rodar no `heimdoo app`:
-![Copiar para cache Heimdoo](https://github.com/Olliv3r/Heimcomm/blob/main/media/android.jpg)
+Movendo todos os arquivos para a pasta cache do `heimdoo app` *Apenas para Android TERMUX*:
+![Copiar para cache Heimdoo](https://github.com/Olliv3r/Heimcomm/blob/main/media/mv_files_cache.jpg)
+
+Gerar comando para o aplicativo `heimdoo` *Apenas para Android Termux*:
+![Gerar comando para o aplicativo Heimdoo](https://github.com/Olliv3r/Heimcomm/blob/main/media/build_command_android.jpg)
+
+Limpar o cache de arquivos do aplicativo `heimdoo` depois do processo *Apenas para Android Termux*:
+![Limpar o cache de arquivos do Heimdoo](https://github.com/Olliv3r/Heimcomm/blob/main/media/mv_files_cache.jpg)
 
 Fontes importantes:
-1. ![Heimdoo mobile](https://github.com/RohitVerma882/Heimdoo)
-2. ![Heimdall PC](https://github.com/amo13/Heimdall)
+1. <a href="https://github.com/RohitVerma882/Heimdoo">Heimdoo Android</a>
+2. <a href="https://github.com/amo13/Heimdall">Heimdall Linux PC</a>
 
 Boa sorte ;)
