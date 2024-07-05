@@ -9,8 +9,9 @@
 
 partition_names_array=()
 flash_filenames_array=()
-command=("heimdall flash")
+heimdall_command=("heimdall flash")
 directory_md5=("AP" "BL" "CSC" "CP" "HOME")
+heimdoo_cache=/storage/emulated/0/Android/data/dev.rohitverma882.heimdoo/cache/cached_imgs
 
 # LER ARQUIVO PIT EXTRAÍDO DO DISPOSITIVO
 read_pit() {
@@ -55,12 +56,12 @@ build_command() {
     if [[ ${#partition_names_array[*]} -eq ${#flash_filenames_array[*]} ]]; then
 	for ((i=0; i < ${#partition_names_array[*]}; i++)); do
 	    param="--${partition_names_array[$i]} $dir_imgs${flash_filenames_array[$i]}"
-	    command+=("$param")
+	    heimdall_command+=("$param")
 	done
     fi
 
     echo -e "Novo comando heimdall gerado:\n"
-    echo -e "${command[*]}\n"
+    echo -e "${heimdall_command[*]}\n"
 }
 
 # EXTRAI TODOS OS ARQUIVO .TAR.MD5
@@ -121,11 +122,35 @@ extract() {
 	
 }
 
+# LIMPA O CACHE
+clearCache() {
+    if [ ! -d $heimdoo_cache ]; then
+	echo -e "\e[0m[!] Diretório \e[1;33m$heimdoo_cache \e[0mnão existe.\e[0m"
+	exit 2
+    else
+	printf "\r\e[0m[*] Excluindo arquivos antigos..."
+    	for file in $heimdoo_cache/*; do
+	    rm -rf $file
+   	done
+    	printf "\r\e[0m[+] Excluindo arquivos antigos...OK\n"
+    fi
+
+}
+
+
 # COPIA TODOS OS ARQUIVOS DE UM DIRETÓRIO EXPECÍFICO PARA O CACHE DO APLICATIVO HEIMDOO (APENAS PARA ANDROID TERMUX)
 mv_files_cache() {
     dir_imgs=$1
-   	
-    cache=/storage/emulated/0/Android/data/dev.rohitverma882.heimdoo/cache/cached_imgs
+    r=$(ls /sdcard > /dev/null 2>&1)
+
+    if [ $? -eq 2 ]; then
+	while [ ! -d $HOME/storage ]; do
+	    printf "\r[*] Conceda o acesso a memória interna...\e[0m"
+	    termux-setup-storage
+	    sleep 1
+        done
+        printf "\r[+] Permissão concedida a memória internal...\e[1;32mOK\e[0m\n"
+    fi
 
     echo -e "\e[0m[!] Todos os arquivos do diretório '$dir_imgs' serão movidos para o cache do heimdoo (app), tem certeza que quer realizar esta operação? (y/n) "
     read resp
@@ -139,23 +164,18 @@ mv_files_cache() {
     	exit
 
     elif [ "$resp" == "y" ]; then
-	if [ ! -d $cache ]; then
+	if [ ! -d $heimdoo_cache ]; then
 	    echo -e "\e[0m[!] Cache heimdoo (app) [\e[1;31mNO\e[0m]"
 	    echo -e "\e[0m[?] abra o aplicativo 'heimdoo' e selecione pelo menos um arquivo e volte a executar este programa '$0' novamente."
 	    exit
 	fi
 
 	echo -e "\e[0m[+] Cache heimdoo (app) [\e[1;32mOK\e[0m]"
-	printf "\r\e[0m[*] Excluindo arquivos antigos..."
-	
-	for file in $cache/*; do
-	    rm -rf $file
-	done
-	printf "\r\e[0m[+] Excluindo arquivos antigos...OK\n"
+	clearCache
   
     	if [ -d $dir_imgs ]; then
 	    echo -e "\e[0m[*] Movenndo novos arquivos para $cache..."
-	    mv $dir_imgs/* $cache
+	    mv $dir_imgs/* $heimdoo_cache
 	    exit 0
 	else
 	    echo -e "\e[1;31m[!] Diretório $dir_imgs não existe.\e[0m"
@@ -165,19 +185,6 @@ mv_files_cache() {
 	echo -e "\e[0m[!] Opçôes que devem ser usadas 'y' e 'n'.\e[0m"
 	mv_files_cache
     fi
-}
-
-clearCache() { 
-    cache=/storage/emulated/0/Android/data/dev.rohitverma882.heimdoo/cache/cached_imgs
-
-    [ ! -d $cache ] && echo -e "\e[0m[!] Diretório \e[1;33m$cache \e[0mnão existe.\e[0m" && exit
-
-    printf "\r\e[0m[*] Excluindo arquivos antigos..."
-    for file in $cache/*; do
-	rm -rf $file
-    done
-    printf "\r\e[0m[+] Excluindo arquivos antigos...OK\n"
-
 }
 
 # Ajuda
